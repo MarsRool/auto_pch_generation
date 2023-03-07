@@ -14,11 +14,14 @@ def clean_includes(files_list: list, includes_to_clean_regex: set, ext_filters: 
     for file_path in files_list:
         if not file_matches_filter(file_path, ext_filters):
             return
-        with open(file_path, 'r+', encoding="utf-8") as f:
-            lines = f.readlines()
-            f.seek(0)
-            f.truncate()
+        try:
+            with open(file_path, 'r+', encoding="utf-8") as f:
+                lines = f.readlines()
+                f.seek(0)
+                f.truncate()
 
-            for line in lines:
-                if is_acceptable(line):
-                    f.write(line)
+                for line in lines:
+                    if is_acceptable(line):
+                        f.write(line)
+        except UnicodeDecodeError:
+            print(f"Error in clean includes: file {file_path} cannot be decoded by utf-8!")
